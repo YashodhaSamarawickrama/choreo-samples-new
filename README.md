@@ -8,7 +8,7 @@ You can explore the `README.md` of each sample in its respective directory to le
 
 ## Getting Started
 
-Follow these steps to get started with these Choreo samples:
+Follow these steps to get started with Choreo samples:
 
 1. Fork this repository to your GitHub account.
 2. Follow the instructions provided in the respective sample's README to deploy and test the sample.
