@@ -4,7 +4,7 @@ import ballerinax/worldbank;
 import wso2/choreo.sendemail;
 
 @display {label: "Country Code"}
-configurable string country = ?;
+configurable string country = "India";
 
 @display {label: "Recipient's Email"}
 configurable string emailAddress = ?;
