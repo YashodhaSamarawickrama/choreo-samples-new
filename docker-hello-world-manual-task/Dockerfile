@@ -16,6 +16,9 @@
 
 FROM golang:1.19.0-alpine as build-env
 
+# Build-time variable
+ARG TEST_BUILD_VAR
+
 RUN mkdir /app
 WORKDIR /app
 
