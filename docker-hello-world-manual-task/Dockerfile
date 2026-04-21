@@ -14,7 +14,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM golang:1.19.0-alpine as build-env
+FROM golang:1.22-alpine AS build-env
 
 # Build-time variable
 ARG TEST_BUILD_VAR
@@ -23,26 +23,24 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY go.mod ./
-
-# Get dependancies - will also be cached if we won't change mod/sum
 RUN go mod download
 
-# Create a new user with UID 10014
+# Create non-root user
 RUN addgroup -g 10014 choreo && \
-    adduser  --disabled-password  --no-create-home --uid 10014 --ingroup choreo choreouser
+    adduser --disabled-password --no-create-home --uid 10014 --ingroup choreo choreouser
 
-# Copy the Go source code into the container
 COPY . .
 
 ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 
-# Just to confirm during build
 RUN echo "Build var is: $TEST_BUILD_VAR"
 
-# Build the binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o /go/bin/app -buildvcs=false
+# Build with updated Go version
+RUN go build -a -o /go/bin/app -buildvcs=false
 
-FROM alpine
+# Minimal runtime image
+FROM alpine:3.19
+
 COPY --from=build-env /go/bin/app /go/bin/app
 
 USER 10014
