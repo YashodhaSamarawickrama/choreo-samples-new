@@ -17,7 +17,8 @@
 FROM golang:1.22-alpine AS build-env
 
 # Build-time variable
-ARG TEST_BUILD_VAR
+ARG MESSAGE
+ENV MESSAGE=$MESSAGE
 
 RUN mkdir /app
 WORKDIR /app
@@ -33,13 +34,22 @@ COPY . .
 
 ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 
-RUN echo "Build var is: $TEST_BUILD_VAR"
+# Use it during build (for visibility)
+RUN echo "Building with message: $MESSAGE"
 
 # Build with updated Go version
 RUN go build -a -o /go/bin/app -buildvcs=false
 
+# -----------------------------
 # Minimal runtime image
+# -----------------------------
 FROM alpine:3.19
+
+# Re-declare build arg for this stage
+ARG MESSAGE
+
+# Make it available at runtime
+ENV MESSAGE=$MESSAGE
 
 COPY --from=build-env /go/bin/app /go/bin/app
 
