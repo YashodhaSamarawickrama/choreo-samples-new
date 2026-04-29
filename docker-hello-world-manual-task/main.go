@@ -24,7 +24,12 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello, World!")
+	message := os.Getenv("MESSAGE")
+	if message == "" {
+		message = "Hello, World"
+	}
+	fmt.Println(message)
+
 	for i, arg := range os.Args[1:] {
 		fmt.Println("Arg", i, ": ", arg)
 	}
